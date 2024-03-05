@@ -10,6 +10,7 @@ struct Carro {
     string marca;
     string modelo;
     string ano;
+    string cor;
     double precoCompra,precoVende,kmMetragem;
     bool sinistro, leilao;
 };
@@ -42,7 +43,7 @@ void listCarro(const Carro *estoque, int totalCarros);//Lista os carros
 void listCliente(const Cliente *clientela, int totalClientes);// Lista os Clientes
 void editCarro(Carro *&estoque, int &totalCarros);// Edição do Cadastro
 void editCliente(Cliente *&clientela, int&totalClientes);// Edição do Cadastro
-void excluirCliente(Cliente *&clientela, int &totalClientes);// Excluir Cadastro de clientes
+int buscaCPF(Cliente *&clientela, int&totalClientes); // BUSCA por cpf
 void venda(Carro *estoque, Cliente *clientela, int totalCarros, int totalClientes, double &bruto); //Vende carros
 double receitaTotal(double gasto, double bruto);//Calcula o lucro
 bool validaCPF(const string &cpf);//Valida CPF
@@ -65,7 +66,7 @@ int main(){
         cout << "[4]. Cadastrar cliente" << endl<< endl;
         cout << "[5]. Veja os clientes cadastrados" << endl<< endl;
         cout << "[6]. Editar Cadastro do Cliente" << endl<< endl;
-        cout << "[7]. Excluir Cadastro do Cliente" << endl<< endl;
+        cout << "[7]. Busque um Cliente pelo CPF" << endl<< endl;
         cout << "[8]. Vender carro" << endl<< endl;
         cout << "[9]. Ver receita total atual" << endl<< endl;
         cout << "[0]. Sair" << endl<< endl;
@@ -92,7 +93,7 @@ int main(){
                 editCliente(clientela,totalClientes);
                 break;
             case 7:
-                excluirCliente(clientela,totalClientes);
+                buscaCPF(clientela,totalClientes);
                 break;
             case 8:
                 venda(estoque, clientela, totalCarros, totalClientes, bruto);
@@ -148,8 +149,10 @@ void cadCarro(Carro *&estoque, int &totalCarros, double &gasto){
         cout << "Marca: ";
         cin >> novoCarro.marca;
         cout << "Modelo: ";
-        getline(cin, novoCarro.modelo);
         cin.ignore();
+        getline(cin, novoCarro.modelo);
+        cout << "Cor: ";
+        getline(cin, novoCarro.cor);
         cout << "Ano: ";
         cin >> novoCarro.ano;
         cout << "Kilometragem: ";
@@ -265,6 +268,7 @@ void listCarro(const Carro *estoque, int totalCarros){
             cout << "Carro " << i + 1 << ":" << endl;
             cout << "Marca: " << estoque[i].marca << endl;
             cout << "Modelo: " << estoque[i].modelo << endl;
+            cout << "Cor: " << estoque[i].cor << endl;
             cout << "Ano: " << estoque[i].ano << endl;
             cout << "Kilometragem: " << estoque[i].kmMetragem << endl;
             cout << "Sinistro: ";
@@ -291,7 +295,7 @@ void listCarro(const Carro *estoque, int totalCarros){
     }
 }
 void editCarro(Carro *&estoque, int &totalCarros){
-    int editCar, cont;
+    int editCar, continua;
     system("cls");
     if(totalCarros==0){
         cout << "Nenhum carro cadastrado para edicao!" << endl;
@@ -301,7 +305,7 @@ void editCarro(Carro *&estoque, int &totalCarros){
     listCarro(estoque,totalCarros);
     do{
         do{
-            cout << "SELECIONE O CLIENTE PARA EDITAR O CADASTRO: ";
+            cout << "SELECIONE O CARRO PARA EDITAR O CADASTRO: ";
             cin >> editCar; 
             if(editCar<=0 || editCar > totalCarros){
                 cout << "CARRO INVALIDO! " << endl << endl;
@@ -309,31 +313,76 @@ void editCarro(Carro *&estoque, int &totalCarros){
         }while(editCar<=0|| editCar > totalCarros);
         cout << endl;
         cout <<"[1] "<<"MARCA: " << estoque[editCar-1].marca << endl;
-        cout <<"[2] "<< "MODELO : " << estoque[editCar-1].modelo << endl;
-        cout <<"[3] "<< "ANO: " <<estoque[editCar-1].ano << endl;
-        cout <<"[4] "<< "KILOMETRAGEM: "<< estoque[editCar-1].kmMetragem << endl;
-        cout <<"[5] "<< "SINISTRO: ";
+        cout <<"[2] "<< "MODELO: " << estoque[editCar-1].modelo << endl;
+        cout <<"[3] "<< "COR:" << estoque[editCar-1].cor << endl;
+        cout <<"[4] "<< "ANO: " << estoque[editCar-1].ano << endl;
+        cout <<"[5] "<< "KILOMETRAGEM: "<< estoque[editCar-1].kmMetragem << endl;
+        cout <<"[6] "<< "SINISTRO: ";
         if(estoque[editCar-1].sinistro==true){
             cout << "SIM" << endl;
         }
         else{
             cout << "NAO" << endl;
         }
-        cout <<"[6] "<< "LEILÃO: ";
+        cout <<"[7] "<< "LEILÃO: ";
         if(estoque[editCar-1].sinistro==true){
             cout << "SIM" << endl;
         }
         else{
             cout << "NAO" << endl;
         }
-        cout <<"[7] "<< "PREÇO: R$" << estoque[editCar-1].precoVende << endl;
+        cout <<"[8] "<< "PREÇO: R$" << estoque[editCar-1].precoVende << endl;
         cout << endl;
         do{
             int edicao;
             cout << "Escolha o numero do item para editar: ";
             cin >> edicao;
             cout << endl;
-
+            switch(edicao){
+                case 1:
+                    cout << "Marca: ";
+                    cin >> estoque[editCar-1].marca;
+                    break;
+                case 2:
+                    cin.ignore();
+                    cout << "Modelo: ";
+                    getline(cin,estoque[editCar-1].modelo);
+                    break;
+                case 3:
+                    cin.ignore();
+                    cout << "Cor: ";
+                    getline(cin, estoque[editCar-1].cor);
+                case 4:
+                    cout << "Ano: ";
+                    cin >> estoque[editCar-1].ano;
+                    break;
+                case 5:
+                    cout << "Kilometragem: ";
+                    cin >> estoque[editCar-1].kmMetragem;
+                    break;
+                case 6:
+                    int opcSin;
+                    cout << "SINISTRO (1 para SIM, 0 para NAO): ";
+                    cin >> opcSin;
+                    if(opcSin==1){
+                        estoque[editCar-1].sinistro = true;
+                    }
+                    else{
+                        estoque[editCar-1].sinistro = false;
+                    }
+                    break;
+                case 7:
+                    int opcLei;
+                    cout << "LEILAO (1 para SIM, 0 para NAO): ";
+                    cin >> opcLei;
+                    if(opcLei==1){
+                        estoque[editCar-1].leilao = true;
+                    }
+                    else{
+                        estoque[editCar-1].leilao = false;
+                    }
+                    break; 
+            }
             cout << "Deseja continuar ?" << endl << "[1] Para Sim, [0] Para Nao: ";
             cin >> continua;
         }while(continua==1);
@@ -341,7 +390,7 @@ void editCarro(Carro *&estoque, int &totalCarros){
         cout << "EDICAO FEITA COM SUCESSO!!" << endl << endl;
         carregando();
         cout << endl;
-        cout << "Deseja editar outro cliente? [1] Sim, [0] Nao: ";
+        cout << "Deseja editar outro CARRO? [1] Sim, [0] Nao: ";
         cin >> continua;
     }while(continua==1);
     carregando();
@@ -453,30 +502,6 @@ void editCliente(Cliente *&clientela, int&totalClientes){
     } while (continua == 1);
     carregando();
 }
-
-void excluirCliente(Cliente *&clientela, int &totalClientes){
-    int excluir=0;
-    if(totalClientes == 0) {
-        cout << "Nenhum cliente cadastrado para exclusao!" << endl;
-        return;
-    }
-    listCliente(clientela,totalClientes);
-    do{
-        if(excluir<0 && excluir>totalClientes){
-            cout << "CLIENTE INVALIDO !" << endl << endl;
-        }
-        cout << "SELECIONE O CLIENTE PARA EXCLUIR O CADASTRO: ";
-        cin >> excluir;
-    }while((excluir<1 || excluir>totalClientes));
-
-    carregando();
-    for(int i = excluir - 1; i < totalClientes - 1; ++i) {
-        clientela[i] = clientela[i + 1];
-    }
-    totalClientes--;
-
-    cout << "Cliente excluido com sucesso!" << endl;
-}
 void listCliente(const Cliente *clientela, int totalClientes){
     system("cls");
     if(totalClientes==0){
@@ -511,7 +536,7 @@ void venda(Carro *estoque, Cliente *clientela, int totalCarros, int totalCliente
         cout << "Carro inválido!" << endl;
         return;
     }
-    int opCad;
+    int opCad, opBusca;
     cout << "O cliente é cadastrado?" << endl << "1 para sim"<< endl
          << "0 para não" << endl <<"Selecione: ";
     cin >> opCad;
@@ -524,15 +549,23 @@ void venda(Carro *estoque, Cliente *clientela, int totalCarros, int totalCliente
             listCliente(clientela, totalClientes);
             break;
     }
-    
+    cout << "Deseja buscar o cliente pelo CPF?" << endl << "1 para sim, 2 para nao" << endl
+         << "Selecione: ";
+    cin >> opBusca;
     int indiceCliente;
-    cout << "Digite o número do cliente que está comprando o carro: ";
-    cin >> indiceCliente;
-    if(indiceCliente < 1 || indiceCliente> totalClientes){
-        cout << "Cliente Inválido!!" << endl;
-        return;
+    switch(opBusca){
+        case 1:
+            indiceCliente = buscaCPF(clientela,totalClientes);
+            break;
+        case 2:
+            cout << "Digite o número do cliente que está comprando o carro: ";
+            cin >> indiceCliente;
+            if(indiceCliente < 1 || indiceCliente> totalClientes){
+                cout << "Cliente Inválido!!" << endl;
+                return;
+            }
+            break;
     }
-
     system("cls");
     int certeza=0;
     int opPreco;
@@ -644,4 +677,42 @@ void carregando(){
     cout << "." << endl;
     sleep(3);
     system("cls");
+}
+int buscaCPF(Cliente *&clientela, int&totalClientes){
+    string cpfBusca;
+    system("cls");
+    cout << "Digite o CPF que deseja buscar: ";
+    cin >> cpfBusca;
+
+    bool encontrado = false;
+
+    // Itera sobre os clientes para encontrar o CPF
+    int i;
+    for (i = 0; i < totalClientes; ++i) {
+        if (clientela[i].CPF == cpfBusca) {
+            encontrado = true;
+            cout << "Cliente encontrado:" << endl;
+            cout << "Nome: " << clientela[i].nome << endl;
+            cout << "CPF: " << clientela[i].CPF << endl;
+            // Exibir outros campos do cliente, se necessário
+            break;
+        }
+    }
+    if (!encontrado) {
+        cout << "Cliente com CPF " << cpfBusca << " não encontrado." << endl;
+        return -1;
+    }
+    else{
+        char certeza;
+
+        cout << "Deseja selecionar este cliente? (S/N): ";
+        cin >> certeza;
+        if (certeza == 'S' || certeza == 's') {
+            return i;
+        } else {
+            // Refazer a busca
+            buscaCPF(clientela, totalClientes);
+        }
+    }
+    carregando();
 }
