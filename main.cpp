@@ -592,7 +592,7 @@ void venda(Carro *estoque, Cliente *clientela, int totalCarros, int totalCliente
             cout << endl << "DIGITE UM VALOR VALIDO!" << endl;
             break;
         }
-    }while(opPreco!=0 && opPreco!=1);
+    }while(opPreco!=0 || opPreco!=1);
 
     cout << endl << "Para o cliente: " << endl;
     cout << "Numero da Clientela: " << indiceCliente << endl;
