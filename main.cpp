@@ -1,4 +1,3 @@
-//Seguinte: IMPLEMENTAR BUSCA -> VENDA
 #include <iostream>
 #include <unistd.h>
 #include <string>
@@ -33,7 +32,7 @@ struct Cliente{
     Data nascimento;
 };
 
-const int  MAX_CARROS=32; // Limite de carros na loja
+const int MAX_CARROS=32; // Limite de carros na loja
 const int MAX_CLIENTES=INT16_MAX; // Pode-se ter infinitos clientes cadastrados
 
 void carregando();
@@ -45,7 +44,7 @@ void editCarro(Carro *&estoque, int &totalCarros);// Edição do Cadastro
 void editCliente(Cliente *&clientela, int&totalClientes);// Edição do Cadastro
 int buscaCPF(Cliente *&clientela, int&totalClientes); // BUSCA por cpf
 void venda(Carro *estoque, Cliente *clientela, int totalCarros, int totalClientes, double &bruto); //Vende carros
-double receitaTotal(double gasto, double bruto);//Calcula o lucro
+void receitaTotal(double gasto, double bruto);//Calcula o lucro
 bool validaCPF(const string &cpf);//Valida CPF
 
 int main(){
@@ -99,24 +98,15 @@ int main(){
             case 8:
                 if (totalCarros == 0){
                     cout << "Nenhum carro disponível para venda." << endl;
-                } else{
+                }else{
                     venda(estoque, clientela, totalCarros, totalClientes, bruto);
-                    cout << endl << "RECEITA ATUAL: " << receitaTotal(gasto, bruto) << endl;
+                    receitaTotal(gasto,bruto);
                     // Após a venda, você precisa diminuir o total de carros no estoque
                     totalCarros--;
-    }
-    break;
-
-            case 9:
-                if (gasto == 0.0 && bruto == 0.0){
-                    cout << endl << "NAO HOUVE VENDAS OU COMPRAS" << endl << endl;
-                }
-                else{
-                    cout << "RECEITA ATUAL: " << endl << endl << "GASTOS: " << gasto << endl 
-                         << "BRUTO: " << bruto << endl << "LUCRO: " << receitaTotal(gasto, bruto) 
-                         << endl << endl;
                 }
                 break;
+            case 9:
+                receitaTotal(gasto,bruto);
             case 0: 
                 carregando();
                 break;
@@ -130,9 +120,7 @@ int main(){
             cout << "SELECAO INVALIDA!!" << endl << endl;
         }
         cout << "RELATORIO DIARIO" << endl;
-        cout << "GASTOS: " << gasto << endl;
-        cout << "RENDIMENTO BRUTO: " << bruto << endl;
-        cout << "LUCRO TOTAL DIARIO: " << receitaTotal(gasto,bruto)<< endl;
+        receitaTotal(gasto,bruto);
         cout << "APERTE 1 PARA SAIR: ";
         cin >> opcaoFinal;
     }while(opcaoFinal!=1);
@@ -155,8 +143,8 @@ void cadCarro(Carro *&estoque, int &totalCarros, double &gasto){
         Carro novoCarro;
         cout << "Marca: ";
         cin >> novoCarro.marca;
-        cout << "Modelo: ";
         cin.ignore();
+        cout << "Modelo: ";
         getline(cin, novoCarro.modelo);
         cout << "Cor: ";
         getline(cin, novoCarro.cor);
@@ -359,6 +347,7 @@ void editCarro(Carro *&estoque, int &totalCarros){
                     cin.ignore();
                     cout << "Cor: ";
                     getline(cin, estoque[editCar-1].cor);
+                    break;
                 case 4:
                     cout << "Ano: ";
                     cin >> estoque[editCar-1].ano;
@@ -406,7 +395,6 @@ void editCarro(Carro *&estoque, int &totalCarros){
     }while(continua==1);
     carregando();
 }
-
 void editCliente(Cliente *&clientela, int&totalClientes){
     int editCli, continua;
     system("cls");
@@ -630,13 +618,13 @@ void venda(Carro *estoque, Cliente *clientela, int totalCarros, int totalCliente
     }
     carregando();
 }
-
-double receitaTotal(double gasto, double bruto){
-    system("cls");
+void receitaTotal(double gasto, double bruto){
     double receita;
     receita = bruto-gasto;
-    return receita;
-};
+    cout << "GASTOS DENTRO DA CONCESSIONARIA: R$" << gasto << endl;
+    cout << "RENDIMENTO BRUTO DA CONCESSIONARIA: R$" << bruto << endl;
+    cout << "RENDIMENTO LIQUIDO: R$" << receita << endl;
+}
 bool validaCPF(const string &cpf){
     if (cpf.length() != 11)
         return false;   // verifica se tem o tamanho necessário
@@ -680,7 +668,7 @@ void carregando(){
     cout << ".";
     sleep(1);
     cout << "." << endl;
-    sleep(3);
+    sleep(2);
 }
 int buscaCPF(Cliente *&clientela, int&totalClientes){
     string cpfBusca;
