@@ -1,4 +1,4 @@
-//Seguinte: ANALISE TODOS OS CASOS POSSIVEIS, DEIXE O CODIGO MAIS BONITO VISUALMENTE//
+//Seguinte: IMPLEMENTAR BUSCA -> VENDA
 #include <iostream>
 #include <unistd.h>
 #include <string>
@@ -535,7 +535,7 @@ void venda(Carro *estoque, Cliente *clientela, int totalCarros, int totalCliente
         cout << "Carro invalido!" << endl;
         return;
     }
-    int opCad, opBusca;
+    int opCad;
     cout << "O cliente e cadastrado?" << endl << "1 para sim"<< endl
          << "0 para nao" << endl <<"Selecione: ";
     cin >> opCad;
@@ -548,25 +548,12 @@ void venda(Carro *estoque, Cliente *clientela, int totalCarros, int totalCliente
             listCliente(clientela, totalClientes);
             break;
     }
-    cout << "Deseja buscar o cliente pelo CPF?" << endl << "1 para sim, 2 para nao" << endl
-         << "Selecione: ";
-    cin >> opBusca;
     int indiceCliente;
-    switch(opBusca){
-        case 1:
-            indiceCliente = buscaCPF(clientela,totalClientes);
-            if(indiceCliente==-1){
-                return;
-            }
-            break;
-        case 2:
-            cout << "Digite o numero do cliente que esta comprando o carro: ";
-            cin >> indiceCliente;
-            if(indiceCliente < 1 || indiceCliente> totalClientes){
-                cout << "Cliente Invalido!!" << endl;
-                return;
-            }
-            break;
+    cout << "Digite o numero do cliente que esta comprando o carro: ";
+    cin >> indiceCliente;
+    if(indiceCliente < 1 || indiceCliente> totalClientes){
+        cout << "Cliente Invalido!!" << endl;
+        return;
     }
     system("cls");
     int certeza=0;
@@ -592,7 +579,7 @@ void venda(Carro *estoque, Cliente *clientela, int totalCarros, int totalCliente
             cout << endl << "DIGITE UM VALOR VALIDO!" << endl;
             break;
         }
-    }while(opPreco!=0 || opPreco!=1);
+    }while(!(opPreco!=0 || opPreco!=1));
 
     cout << endl << "Para o cliente: " << endl;
     cout << "Numero da Clientela: " << indiceCliente << endl;
@@ -678,7 +665,6 @@ void carregando(){
     sleep(1);
     cout << "." << endl;
     sleep(3);
-    system("cls");
 }
 int buscaCPF(Cliente *&clientela, int&totalClientes){
     string cpfBusca;
@@ -689,24 +675,23 @@ int buscaCPF(Cliente *&clientela, int&totalClientes){
     bool encontrado = false;
 
     // Itera sobre os clientes para encontrar o CPF
-    int indiceCliente = -1;
+    int indiceCliente = 0;
     for (int i = 0; i < totalClientes; ++i) {
         if (clientela[i].CPF == cpfBusca) {
             encontrado = true;
             cout << "Cliente encontrado:" << endl;
             cout << "Nome: " << clientela[i].nome << endl;
             cout << "CPF: " << clientela[i].CPF << endl;
-            // Exibir outros campos do cliente, se necessário
-            char certeza;
-            cout << "Deseja selecionar este cliente? (S/N): ";
-            cin >> certeza;
-            if (certeza == 'S' || certeza == 's') {
-                indiceCliente = i;
-            }
-            else{
-                indiceCliente = -1;
-            }
-            break;
+            cout << "Nome da mae: " << clientela[i].nomeMae << endl;
+            cout << "Nascido em: " << clientela[i].nascimento.dia << "/" 
+            << clientela[i].nascimento.mes 
+            << "/" << clientela[i].nascimento.anoNascimento << endl;
+            cout << "Contato: " << clientela[i].contato << endl;
+            cout << "Mora na rua: " << clientela[i].moradia.rua << endl;
+            cout << "Numero: " << clientela[i].moradia.numero << endl;
+            cout << "Bairro: " << clientela[i].moradia.bairro << endl;
+            cout << "CEP: " << clientela[i].moradia.CEP << endl;
+            cout << "Na cidade de: " << clientela[i].moradia.cidade << endl;
         }
     }
     if (!encontrado) {
